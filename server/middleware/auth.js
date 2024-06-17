@@ -1,34 +1,34 @@
 import jwt from 'jsonwebtoken';
 import ENV from '../config.js';
 
-export default async function Auth(req, res, next) {
+/** auth middleware */
+export default function Auth(req, res, next) {
     try {
-        // Access authorization header to validate request
+        // Check for authorization header
         const authHeader = req.headers.authorization;
-        if (!authHeader) {
-            return res.status(401).json({ error: "Authorization header missing!" });
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return res.status(401).json({ error: "Authorization header missing or malformed" });
         }
 
+        // Extract token from header
         const token = authHeader.split(" ")[1];
-        if (!token) {
-            return res.status(401).json({ error: "Token missing!" });
-        }
 
-        // Verify token and retrieve user details
+        // Retrieve the user details of the logged-in user
         const decodedToken = jwt.verify(token, ENV.JWT_SECRET);
+
         req.user = decodedToken;
-        
-        next();  // Move to the next middleware or route handler
+
+        next();
     } catch (error) {
-        res.status(401).json({ error: "Authentication failed!" });
+        res.status(401).json({ error: "Authentication Failed!" });
     }
 }
 
-export function localVariables(req,res,next){
-
-    req.app.locals={
-        OTP:null,
-        resetSession:false
-    }
-    next()
+/** local variables middleware */
+export function localVariables(req, res, next) {
+    req.app.locals = {
+        OTP: null,
+        resetSession: false
+    };
+    next();
 }

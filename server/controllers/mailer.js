@@ -7,8 +7,8 @@ let nodeConfig={
     host: 'smtp.ethereal.email',
     port: 587,
     auth: {
-        user: 'connor17@ethereal.email',
-        pass: 'eMMf4nqCQqJMHnnEPg'
+        user: ENV.EMAIL,
+        pass: ENV.PASSWORD
 
     }
 }
@@ -20,7 +20,7 @@ let transporter = nodemailer.createTransport(nodeConfig);
 let MailGenerator = new MailGen({
     theme:"default",
     product:{
-        name:"MAilgen",
+        name:"Mailgen",
         link:'https://mailgen.js/'
     }
 })

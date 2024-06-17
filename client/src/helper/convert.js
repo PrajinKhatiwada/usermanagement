@@ -1,15 +1,16 @@
-/** converting image into base64 */
 
-export default function convertToBase64(file) {
-    return new Promise((resolve,reject)=>{
-        const fileReader =new FileReader();
+/** image onto base64 */
+export default function convertToBase64(file){
+    return new Promise((resolve, reject) => {
+        const fileReader = new FileReader();
         fileReader.readAsDataURL(file);
-        fileReader.onload = () =>{
+
+        fileReader.onload = () => {
             resolve(fileReader.result)
         }
-        fileReader.onerror= error=>{
+
+        fileReader.onerror = (error) => {
             reject(error)
         }
     })
-    
 }

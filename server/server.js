@@ -1,47 +1,43 @@
-import express from 'express'
-import cors from 'cors'
-import morgan from 'morgan'
+import express from 'express';
+import cors from 'cors';
+import morgan from 'morgan';
 import connect from './database/conn.js';
-import router from './router/route.js'
+import router from './router/route.js';
 
-
-
-
+import bodyParser from 'body-parser';
 
 const app = express();
+// Middleware to parse JSON and handle large payloads
+app.use(bodyParser.json({ limit: '10mb' })); // Adjust the limit as needed
 
-/**  middleware */
+
+/** middlewares */
 app.use(express.json());
 app.use(cors());
-app.use (morgan('tiny'));
-app.disable('x-powered-by'); //  less hacker know about our stack
- 
-
-const port = process.env.PORT || 3000;
+app.use(morgan('tiny'));
+app.disable('x-powered-by'); // less hackers know about our stack
 
 
+const port = 8080;
 
-/** HTTP get request */
-
-app.get('/',(req,res)=>{
-    res.status(201).json("Home GET request")
+/** HTTP GET Request */
+app.get('/', (req, res) => {
+    res.status(201).json("Home GET Request");
 });
 
+
 /** api routes */
-app.use('/api',router)
-/**  start server only we have valid connection */
+app.use('/api', router)
 
-connect().then(()=>{
-    try{
-        app.listen (port,() => {
+/** start server only when we have valid connection */
+connect().then(() => {
+    try {
+        app.listen(port, () => {
             console.log(`Server connected to http://localhost:${port}`);
-        
         })
-
-    }catch(error){
-        console.log("Cannot connect to the server")
+    } catch (error) {
+        console.log('Cannot connect to the server')
     }
-}).catch(error =>{
-    console.log("Invalid database connection.....!");
+}).catch(error => {
+    console.log("Invalid database connection...!");
 })
-
