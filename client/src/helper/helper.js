@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { jwtDecode } from "jwt-decode";
+import {jwtDecode} from 'jwt-decode';
 
 axios.defaults.baseURL = process.env.REACT_APP_SERVER_DOMAIN;
 
@@ -37,23 +37,21 @@ export async function getUser({ username }){
 /** register user function */
 export async function registerUser({ credentials }) {
     try {
-        const response = await axios.post('/api/register', credentials);
-        const { msg } = response.data;
-        const { status } = response;
-        
-        const { username, email } = credentials;
-
-        /** send email */
-        if (status === 201) {
-            await axios.post('/api/registerMail', { username, userEmail: email, text: msg });
-        }
-
-        return Promise.resolve(msg);
+      const { data: { msg }, status } = await axios.post(`/api/register`, credentials);
+  
+      let { username, email } = credentials;
+  
+      /** send email */
+      if (status === 201) {
+        await axios.post('/api/registerMail', { username, userEmail: email, text: msg });
+      }
+  
+      return Promise.resolve(msg);
     } catch (error) {
-        const errorMsg = error.response?.data?.error || 'Registration failed';
-        return Promise.reject({ error: errorMsg });
+      console.error('API call error:', error);
+      return Promise.reject({ error: error.response ? error.response.data : error });
     }
-}
+  }
 
 /** login function */
 export async function verifyPassword({ username, password }){

@@ -35,9 +35,9 @@ export default function Username() {
         <div className={styles.glass}>
 
           <div className="title flex flex-col items-center">
-            <h4 className='text-5xl font-bold'>Connect Nepal</h4>
+            <h4 className='text-5xl font-bold'>Hello Again!</h4>
             <span className='py-4 text-xl w-2/3 text-center text-gray-500'>
-              Explore More about Nepal by connecting with us.
+              Explore More by connecting with us.
             </span>
           </div>
 

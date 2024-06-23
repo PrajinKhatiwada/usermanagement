@@ -9,7 +9,7 @@
 }
 
 body{
-    background-image: url('./assets/nepal2.png'),url('./assets/nepal3.png'); /* Replace with the path to your background image */
+    background-image: url('./assets/nepal2.png'); /* Replace with the path to your background image */
     background-repeat: repeat; /* This will repeat the image */
     background-size: cover; /* Adjust the image to cover the container */
     background-position: center; /* Center the background image */

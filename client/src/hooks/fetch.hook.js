@@ -4,33 +4,45 @@ import { getUsername } from '../helper/helper'
 
 axios.defaults.baseURL = process.env.REACT_APP_SERVER_DOMAIN;
 
-
 /** custom hook */
-export default function useFetch(query){
-    const [getData, setData] = useState({ isLoading : false, apiData: undefined, status: null, serverError: null })
+export default function useFetch(query) {
+    const [getData, setData] = useState({ isLoading: false, apiData: undefined, status: null, serverError: null });
 
     useEffect(() => {
+        let isMounted = true; // flag to track if component is mounted
 
         const fetchData = async () => {
             try {
-                setData(prev => ({ ...prev, isLoading: true}));
+                setData(prev => ({ ...prev, isLoading: true }));
 
-                const { username } = !query ? await getUsername() : '';
-                
-                const { data, status } = !query ? await axios.get(`/api/user/${username}`) : await axios.get(`/api/${query}`);
-
-                if(status === 201){
-                    setData(prev => ({ ...prev, isLoading: false}));
-                    setData(prev => ({ ...prev, apiData : data, status: status }));
+                let response;
+                if (!query) {
+                    const { username } = await getUsername();
+                    response = await axios.get(`/api/user/${username}`);
+                } else {
+                    response = await axios.get(`/api/${query}`);
                 }
 
-                setData(prev => ({ ...prev, isLoading: false}));
+                if (isMounted) {
+                    if (response.status === 200) {
+                        setData(prev => ({ ...prev, isLoading: false, apiData: response.data, status: response.status }));
+                    } else {
+                        setData(prev => ({ ...prev, isLoading: false, serverError: `Error: ${response.statusText}`, status: response.status }));
+                    }
+                }
             } catch (error) {
-                setData(prev => ({ ...prev, isLoading: false, serverError: error }))
+                if (isMounted) {
+                    setData(prev => ({ ...prev, isLoading: false, serverError: error.message }));
+                }
             }
         };
-        fetchData()
 
+        fetchData();
+
+        // Cleanup function
+        return () => {
+            isMounted = false;
+        };
     }, [query]);
 
     return [getData, setData];
